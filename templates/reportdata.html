@@ -1,0 +1,212 @@
+<!-- Chart -->
+<script>
+    $(function () {
+        //alert('{{ storage }}');
+        //var testing = []; 
+        //testing.push(parseFloat('{{ storage }}').toFixed(2));
+        var storage = parseInt('{{ storage }}');
+        var display = parseInt('{{ display }}');
+        
+
+        var chart;
+        $(document).ready(function () {
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container',
+                    type: 'column'
+                },
+                title: {
+                    text: 'Inventory'
+                },
+                xAxis: {
+                    categories: ['{{ date }}'],
+                    title: {
+                        text: null
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Cost'
+                    },
+                    labels: {
+                        formatter: function () {
+                            return '₱' + this.axis.defaultLabelFormatter.call(this);
+                        }
+                    }
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '' +
+                            '₱ ' + this.y;
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Storage',
+                    data: [storage]
+
+                }, {
+                    name: 'Display',
+                    data: [display]
+
+                }]
+            });
+        });
+
+    });
+</script>
+
+<!--datatable-->
+<script>
+    $(document).ready(function () {
+        $('#tblDetails').DataTable({
+            searching: false, 
+            paging: false, 
+            info: false
+        });
+
+        $('#tblFast').DataTable({
+            searching: false, 
+            paging: false, 
+            info: false
+        });
+
+        $('#tblSlow').DataTable({
+            searching: false, 
+            paging: false, 
+            info: false
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-md-6" style="padding-left: 30px; margin-top: 30px;">
+        <div id="container" style="margin: 0 auto; height: 400px;"></div>
+    </div>
+    <div class="col-md-6" style="padding-left: 30px; margin-top: 30px;">
+        <div style="height: 400px; width:100%;">
+            <div style="height: 100%; overflow:auto; border:1px solid #5F6A6A;">
+                <div style="text-align: center; font-weight: bold; font-size: 0.9em;">Inventory Details</div>
+                {% if detdata %}
+                <table id="tblDetails" class="table table-striped" style="font-size: 0.8em;">
+                    <thead>
+                        <tr style="background-color: #04AA6D; color: #fff;">
+                            <th>Name</th>
+                            <th>Unit Price</th>
+                            <th>Storage Inventory</th>
+                            <th>Storage Total Price</th>
+                            <th>Unit Price</th>
+                            <th>Display Inventory</th>
+                            <th>Display Total Price</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for k, v in details.items() %}
+                        <tr>
+                            <td>{{ v.name }}</td>
+                            <td>₱ {{ "{:,.2f}".format(v.unit_price) }}</td>
+                            <td>{{ v.storage_inv }}</td>
+                            <td>₱ {{ "{:,.2f}".format(v.unit_price * v.storage_inv) }}</td>
+                            <td>₱ {{ "{:,.2f}".format(v.unit_price) }}</td>
+                            <td>{{ v.display_inv }}</td>
+                            <td>₱ {{ "{:,.2f}".format(v.unit_price * v.display_inv) }}</td>
+                            <td>₱ {{ "{:,.2f}".format(v.total_price) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td colspan="3" style="font-weight: bold; text-align: center;">STORAGE TOTAL: ₱ {{ "{:,.2f}".format(storage) }}</td>
+                            <td colspan="3" style="font-weight: bold; text-align: center;">DISPLAY TOTAL: ₱ {{ "{:,.2f}".format(display) }}</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <td>&nbsp;</td>
+                        <td colspan="6" style="font-weight: bold; text-align: center;">TOTAL: ₱ {{ "{:,.2f}".format(total) }}</td>
+                        <td>&nbsp;</td>
+                    </tfoot>
+                </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6" style="padding-left: 30px; margin-top: 30px;">
+        <div style="height: 600px; width: 100%;">
+            <div style="height: 100%; overflow:auto; border:1px solid #5F6A6A;">
+                <div style="text-align: center; font-weight: bold; font-size: 1.0em;">Top 10 Fast-Moving</div>
+                {% if fast %}
+                <table id="tblFast" class="table table-striped" style="font-size: 0.8em;">
+                    <thead>
+                        <tr style="background-color: #04AA6D; color: #fff;">
+                            <th>Name</th>
+                            <th>Storage Inventory</th>
+                            <th>Display Inventory</th>
+                            <th>Unit Price</th>
+                            <th>Total Quantity</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for k, v in fast.items() %}
+                        <tr>
+                            <td>{{ v.name }}</td>
+                            <td>{{ v.storage_inv }}</td>
+                            <td>{{ v.display_inv }}</td>
+                            <td>₱ {{ "{:,.2f}".format(v.unit_price) }}</td>
+                            <td>{{ v.qty_total }}</td>
+                            <td>₱ {{ "{:,.2f}".format(v.amt_total) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6" style="padding-left: 30px; margin-top: 30px;">
+        <div style="height: 600px; width: 100%;">
+            <div style="height: 100%; overflow:auto; border:1px solid #5F6A6A;">
+                <div style="text-align: center; font-weight: bold; font-size: 1.0em;">Top 10 Slow-Moving</div>
+                {% if slodata %}
+                <table id="tblSlow" class="table table-striped" style="font-size: 0.8em;">
+                    <thead>
+                        <tr style="background-color: #04AA6D; color: #fff;">
+                            <th>Name</th>
+                            <th>Storage Inventory</th>
+                            <th>Display Inventory</th>
+                            <th>Unit Price</th>
+                            <th>Total Quantity</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for k, v in slow.items() %}
+                        <tr>
+                            <td>{{ v.name }}</td>
+                            <td>{{ v.storage_inv }}</td>
+                            <td>{{ v.display_inv }}</td>
+                            <td>₱ {{ "{:,.2f}".format(v.unit_price) }}</td>
+                            <td>{{ v.qty_total }}</td>
+                            <td>₱ {{ "{:,.2f}".format(v.amt_total) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

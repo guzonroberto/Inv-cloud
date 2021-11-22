@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css">
+
+    <!--datatable-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css">
+    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>-->
+
+    <!--Data table-->
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
+
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+    <title>Marosan Report</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .topnav {
+            overflow: hidden;
+            background-color: #04AA6D;
+            position: relative;
+        }
+
+        .topnav #myLinks {
+            display: none;
+        }
+
+        .topnav a {
+            color: white;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 17px;
+            display: block;
+        }
+
+        .topnav a.icon {
+            background: #04AA6D;
+            display: block;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .topnav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .active {
+            background-color: #04AA6D;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Navigation Menu -->
+    <div class="topnav">
+        <a href="javascript:void(0);" class="active"><b>Marosan Systems</b></a>
+        <div id="myLinks">
+            <hr>
+            <a href="javascript:void(0);" id="dashboard">Dashboard</a>
+            <a href="javascript:void(0)" id="reports">Reports</a>
+            <a href="javascript:void(0);" id="logout">Sign out</a>
+        </div>
+        <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+            <i class="fa fa-bars"></i>
+        </a>
+    </div>
+
+    <div style="text-align: center;" id="contentDiv">
+        <div style="font-size: 1.5em; margin-top: 50px;">
+            <b>WELCOME TO MAROSANS</b>
+        </div>
+    </div>
+
+    <div style="text-align: center; display: none;" id="loadingDiv">
+        <div style="font-size: 1.5em; margin-top: 50px;">
+            <b>Please wait...</b>
+        </div>
+    </div>
+
+    <script>
+        function myFunction() {
+            var x = document.getElementById("myLinks");
+            if (x.style.display === "block") {
+                x.style.display = "none";
+            } else {
+                x.style.display = "block";
+            }
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#reports').click(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: "/reports",
+                    beforeSend: function () {
+                        $('#contentDiv').hide();
+                        $('#loadingDiv').show();
+                    },
+                    success: function (html) {
+                        $('#contentDiv').html(html);
+                        $('#loadingDiv').hide();
+                        $('#contentDiv').show();
+
+                        myFunction();
+                    }
+                });
+            });
+
+            $('#logout').click(function () {
+                window.open("{{ url_for('logout') }}", "_self")
+            });
+
+            $('#dashboard').click(function () {
+                $("#contentDiv").html("<div style='font-size: 1.5em; margin-top: 50px;'><b>WELCOME TO MAROSANS</b></div>");
+                myFunction();
+            });
+
+        });
+    </script>
+
+    <!--
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['bar'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ['Inventory', 'Storage', 'Display'],
+                ['Oct 31', 6548, 4123]
+            ]);
+
+            var options = {
+                chart: {
+                    width: 400,
+                    height: 300
+                },
+                colors: ['#9086A6','#75A3BA']
+            };
+
+            var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+            chart.draw(data, google.charts.Bar.convertOptions(options));
+        }
+    </script>
+
+    <div id="columnchart_material" style="margin-top: 50px;"></div>
+-->
+
+</body>
+
+</html>
