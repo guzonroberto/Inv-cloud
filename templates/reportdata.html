@@ -1,12 +1,9 @@
 <!-- Chart -->
 <script>
     $(function () {
-        //alert('{{ storage }}');
-        //var testing = []; 
-        //testing.push(parseFloat('{{ storage }}').toFixed(2));
+
         var storage = parseInt('{{ storage }}');
         var display = parseInt('{{ display }}');
-        
 
         var chart;
         $(document).ready(function () {
@@ -68,21 +65,45 @@
 <!--datatable-->
 <script>
     $(document).ready(function () {
+        jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+            "formatted-num-pre": function (a) {
+                a = (a === "-" || a === "") ? 0 : a.replace(/[^\d\-\.]/g, "");
+                return parseFloat(a);
+            },
+
+            "formatted-num-asc": function (a, b) {
+                return a - b;
+            },
+
+            "formatted-num-desc": function (a, b) {
+                return b - a;
+            }
+        });
+
         $('#tblDetails').DataTable({
-            searching: false, 
-            paging: false, 
+            columnDefs: [
+                { type: 'formatted-num', targets: [1, 2, 3, 4, 5, 6, 7] }
+            ],
+            searching: false,
+            paging: false,
             info: false
         });
 
         $('#tblFast').DataTable({
-            searching: false, 
-            paging: false, 
+            columnDefs: [
+                { type: 'formatted-num', targets: [1, 2, 3, 4, 5] }
+            ],
+            searching: false,
+            paging: false,
             info: false
         });
 
         $('#tblSlow').DataTable({
-            searching: false, 
-            paging: false, 
+            columnDefs: [
+                { type: 'formatted-num', targets: [1, 2, 3, 4, 5] }
+            ],
+            searching: false,
+            paging: false,
             info: false
         });
     });
@@ -101,13 +122,13 @@
                     <thead>
                         <tr style="background-color: #04AA6D; color: #fff;">
                             <th>Name</th>
-                            <th>Unit Price</th>
+                            <th>Unit_Price</th>
                             <th>Storage Inventory</th>
-                            <th>Storage Total Price</th>
-                            <th>Unit Price</th>
+                            <th>Storage_Total_Price</th>
+                            <th>Unit_Price</th>
                             <th>Display Inventory</th>
-                            <th>Display Total Price</th>
-                            <th>Total Price</th>
+                            <th>Display_Total_Price</th>
+                            <th>Total_Price</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -127,12 +148,15 @@
                     <tfoot>
                         <tr>
                             <td>&nbsp;</td>
-                            <td colspan="3" style="font-weight: bold; text-align: center;">STORAGE TOTAL: ₱ {{ "{:,.2f}".format(storage) }}</td>
-                            <td colspan="3" style="font-weight: bold; text-align: center;">DISPLAY TOTAL: ₱ {{ "{:,.2f}".format(display) }}</td>
+                            <td colspan="3" style="font-weight: bold; text-align: center;">STORAGE TOTAL: ₱ {{
+                                "{:,.2f}".format(storage) }}</td>
+                            <td colspan="3" style="font-weight: bold; text-align: center;">DISPLAY TOTAL: ₱ {{
+                                "{:,.2f}".format(display) }}</td>
                             <td>&nbsp;</td>
                         </tr>
                         <td>&nbsp;</td>
-                        <td colspan="6" style="font-weight: bold; text-align: center;">TOTAL: ₱ {{ "{:,.2f}".format(total) }}</td>
+                        <td colspan="6" style="font-weight: bold; text-align: center;">TOTAL: ₱ {{
+                            "{:,.2f}".format(total) }}</td>
                         <td>&nbsp;</td>
                     </tfoot>
                 </table>
@@ -142,6 +166,7 @@
     </div>
 </div>
 
+<!--
 <div class="row">
     <div class="col-md-6" style="padding-left: 30px; margin-top: 30px;">
         <div style="height: 600px; width: 100%;">
@@ -152,20 +177,20 @@
                     <thead>
                         <tr style="background-color: #04AA6D; color: #fff;">
                             <th>Name</th>
+                            <th>Unit_Price</th>
                             <th>Storage Inventory</th>
                             <th>Display Inventory</th>
-                            <th>Unit Price</th>
                             <th>Total Quantity</th>
-                            <th>Total Price</th>
+                            <th>Total_Price</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for k, v in fast.items() %}
                         <tr>
                             <td>{{ v.name }}</td>
+                            <td>₱ {{ "{:,.2f}".format(v.unit_price) }}</td>
                             <td>{{ v.storage_inv }}</td>
                             <td>{{ v.display_inv }}</td>
-                            <td>₱ {{ "{:,.2f}".format(v.unit_price) }}</td>
                             <td>{{ v.qty_total }}</td>
                             <td>₱ {{ "{:,.2f}".format(v.amt_total) }}</td>
                         </tr>
@@ -185,20 +210,20 @@
                     <thead>
                         <tr style="background-color: #04AA6D; color: #fff;">
                             <th>Name</th>
+                            <th>Unit_Price</th>
                             <th>Storage Inventory</th>
                             <th>Display Inventory</th>
-                            <th>Unit Price</th>
                             <th>Total Quantity</th>
-                            <th>Total Price</th>
+                            <th>Total_Price</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for k, v in slow.items() %}
                         <tr>
                             <td>{{ v.name }}</td>
+                            <td>₱ {{ "{:,.2f}".format(v.unit_price) }}</td>
                             <td>{{ v.storage_inv }}</td>
                             <td>{{ v.display_inv }}</td>
-                            <td>₱ {{ "{:,.2f}".format(v.unit_price) }}</td>
                             <td>{{ v.qty_total }}</td>
                             <td>₱ {{ "{:,.2f}".format(v.amt_total) }}</td>
                         </tr>
@@ -210,3 +235,4 @@
         </div>
     </div>
 </div>
+-->
